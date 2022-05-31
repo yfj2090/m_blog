@@ -1,0 +1,131 @@
+// 文字类
+// 1. 文本超出范围，显示省略号
+.text-overflow() {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+// 2. 绝对定位
+.positionAbsolute(@top: null, @right: null, @bottom: null, @left: null) {
+  position: absolute;
+
+  & when (ispixel(@top)) {
+    top: @top;
+  }
+
+  & when (ispixel(@right)) {
+    right: @right;
+  }
+
+  & when (ispixel(@bottom)) {
+    bottom: @bottom;
+  }
+
+  & when (ispixel(@left)) {
+    left: @left;
+  }
+}
+
+
+// 浮动类
+// 1. 清除浮动
+.clearfix {
+  &:after {
+    clear: both;
+    content: '.';
+    display: block;
+    height: 0;
+    line-height: 0;
+    overflow: hidden;
+  }
+
+  *height: 1%;
+}
+
+// 布局类
+
+// 功能类
+// 1. 画三角
+.triangle(@width: 10px, @direction: top, @color: @bgBlueLight) {
+  border: @width solid transparent;
+
+  & when (@direction =top) {
+    // 上三角
+    border-bottom-color: @color;
+  }
+
+  & when (@direction =bottom) {
+    // 下三角
+    border-top-color: @color;
+  }
+
+  & when (@direction =left) {
+    // 左三角
+    border-right-color: @color;
+  }
+
+  & when (@direction =right) {
+    // 右三角
+    border-left-color: @color;
+  }
+}
+
+// 2. 渐变
+/*渐变(从上到下）*/
+.linear-gradient(@direction: bottom, @color1: transparent, @color2: transparent, @color3: transparent) {
+  background: linear-gradient(to @direction, @color1, @color2, @color3);
+  /* 标准的语法 */
+}
+
+// 3. 2D旋转
+.translate2D(@x, @y) {
+  transform: translate(@x, @y);
+}
+
+// 4. 定位居中
+.Absolutetranslate(@x, @y) {
+  .positionAbsolute(50%, 0, 0, 50%);
+  .translate2D(@x, @y);
+}
+
+// 透明度 rgb转rgba或十六进制转rgba
+.opacity(@color, @opacity) {
+  background-color: rgba(@color, @opacity);
+}
+
+// 数字/英文字体 Regular
+@font-face {
+  font-family: "DINNextW1G-Regular";
+  src: url('/static/fonts/DINNextW1G-Regular.otf');
+}
+
+// 数字/英文字体 Medium
+@font-face {
+  font-family: "DINNextW1G-Medium";
+  src: url('/static/fonts/DINNextW1G-Medium.otf');
+}
+
+// 数字/英文字体 Bold
+@font-face {
+  font-family: "DINNextW1G-Bold";
+  src: url('/static/fonts/DINNextW1G-Bold.otf');
+}
+
+// 字体自重
+.fontWeight(@weight, @level: '') {
+  & when (@weight ='Regular') {
+    // 常规体
+    font-family: 'DINNextW1G-Regular', 'PingFangSC-Regular', 'Microsoft YaHei', '微软雅黑', sans-serif e(@level);
+  }
+
+  & when (@weight ='Medium') {
+    // 中黑体
+    font-family: 'DINNextW1G-Medium', 'PingFangSC-Medium', 'Microsoft YaHei', '微软雅黑', sans-serif e(@level);
+  }
+
+  & when (@weight ='Bold') {
+    // 中粗体
+    font-family: 'DINNextW1G-Bold', 'PingFangSC-Semibold', 'Microsoft YaHei', '微软雅黑', sans-serif e(@level);
+  }
+}
