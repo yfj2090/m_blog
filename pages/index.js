@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { getHomeSaga } from '@store/actions/home'
+import TodoList from './todoList'
 
 
 const Index = () => {
@@ -16,6 +17,8 @@ const Index = () => {
       {
         home ? <span>{ home.title  }</span> : null
       }
+      <br/>
+      <TodoList/>
     </div>
   )
 }

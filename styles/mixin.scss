@@ -1,0 +1,39 @@
+// 文字类
+// 1. 文本超出范围，显示省略号
+@mixin text-overflow() {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+
+// 浮动类
+// 1. 清除浮动
+.clearfix {
+  &:after {
+    clear: both;
+    content: '.';
+    display: block;
+    height: 0;
+    line-height: 0;
+    overflow: hidden;
+  }
+
+  *height: 1%;
+}
+
+// 布局类
+
+// 功能类
+
+// 2. 渐变
+/*渐变(从上到下）*/
+@mixin linear-gradient($direction: bottom, $color1: transparent, $color2: transparent, $color3: transparent) {
+  background: linear-gradient(to $direction, $color1, $color2, $color3);
+  /* 标准的语法 */
+}
+
+// 透明度 rgb转rgba或十六进制转rgba
+@mixin opacity($color, $opacity) {
+  background-color: rgba($color, $opacity);
+}

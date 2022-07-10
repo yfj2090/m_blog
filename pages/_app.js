@@ -1,6 +1,7 @@
 // import App from 'next/app'
 import { Provider } from 'react-redux'
 import { wrapper } from '../store'
+import './index.scss'
 
 function MyApp(props) {
     const {

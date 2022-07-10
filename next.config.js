@@ -1,20 +1,16 @@
 const path = require('path')
 const withPlugins = require('next-compose-plugins')
-const withLess = require('next-with-less')
 
 function resolve(dir) {
   return path.resolve(__dirname, dir)
 }
 
 module.exports = withPlugins([
-  [withLess, {
-    cssModules: true,
-    cssLoaderOptions: {
-      localIdentName: '[local]___[hash:base64:5]',
-    },
-    lessLoaderOptions: {
-      javascriptEnabled: true,
-    },
+  [{
+    // cssModules: true,
+    // cssLoaderOptions: {
+    //   localIdentName: '[local]___[hash:base64:5]',
+    // },
     webpack(config, { isServer }) {
       const fontLoaderRule = {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
