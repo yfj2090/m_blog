@@ -1,6 +1,6 @@
-@import './mixin.less';
-@import './var.less';
-@import './initialize.less';
+@import './mixin.scss';
+@import './var.scss';
+@import './initialize.scss';
 
 html {
   width: 100%;
@@ -17,33 +17,4 @@ body {
 
 a {
   color: $MAIN-COLOR-1;
-}
-
-:global(.ant-layout-header) {
-  height: 80px;
-  line-height: 80px;
-  background: $LINEAR-GRADIENT-3;
-}
-
-:global(.ant-btn), button {
-  display: block;
-  padding: 0;
-  background: none;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-
-  &:hover {
-    // border-color :fade($BORDER-COlOR-1, 0%);
-  }
-
-  &:focus {
-    // border-color: fade($BORDER-COlOR-1, 0%);
-    outline: none;
-  }
-}
-
-button:disabled,
-button[disabled] {
-  background-color: $FONT-COLOR-4;
 }

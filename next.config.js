@@ -7,10 +7,9 @@ function resolve(dir) {
 
 module.exports = withPlugins([
   [{
-    // cssModules: true,
-    // cssLoaderOptions: {
-    //   localIdentName: '[local]___[hash:base64:5]',
-    // },
+    sassOptions: {
+      includePaths: [path.join(__dirname, 'styles')],
+    },
     webpack(config, { isServer }) {
       const fontLoaderRule = {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,

@@ -1,0 +1,58 @@
+@import '../styles/var.scss';
+
+.todoList {
+    position: relative;
+    width: 300px;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 50px 25px;
+    border: 1px solid $BORDER-COlOR-1;
+    border-radius: 10px;
+    &Title {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    &Input {
+        width: 100%;
+    }
+
+    &Footer {
+        position: absolute;
+        bottom: 20px;
+        left: 25px;
+    }
+
+    &Status {
+        display: inline-block;
+        span {
+            padding: 5px;
+            cursor: pointer;
+            &:hover {
+                background-color: $MAIN-COLOR-1;
+                color: $WHITE;
+            }
+        }
+    }
+
+    .active {
+        background-color: $MAIN-COLOR-1;
+        color: $WHITE;
+    }
+    
+}
+
+.todoItem {
+    width: 100%;
+    line-height: 20px;
+    margin: 20px 0;
+
+    &Name {
+        margin-left: 10px;
+    }
+
+    &Delete {
+        float: right;
+    }
+}
