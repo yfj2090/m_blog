@@ -1,13 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useLayoutEffect } from 'react'
 import style from './index.module.scss'
 
 const TodoList = () => {
     // TodoList 内容
     const [content, setContent] = useState([])
-    // TodoList finish内容
-    const [finishContent, setFinishContent] = useState([])
-    // TodoList unFinish内容
-    const [unFinishContent, setUnFinishContent] = useState([])
     // TodoList Status Toggle => all, finish&&unfinish, clearFinish
     const [showStatus, setShowStatus] = useState('all')
     // 剩余任务数量
@@ -17,7 +13,7 @@ const TodoList = () => {
 
     const inputRef = useRef()
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (content.length) {
             // 计算剩余任务数量
             let num = 0
@@ -27,65 +23,31 @@ const TodoList = () => {
                 }
             })
             setContentLeft(num)
+
+            judgeFooterStatus()
         }
     }, [content])
 
-    useEffect(() => {
-        // 判断 Footer Status 显隐状态
-        if (finishContent.length && finishContent.length !== content.length) {
+    // 判断 Footer Status 显隐状态
+    const judgeFooterStatus = () => {
+        if (content.some(item => item.isfinish !== content[0].isfinish)) {
             setShowStatus('finish&&unfinish')
-        } else if (finishContent.length && finishContent.length === content.length) {
-            setShowStatus('clearFinish')
+        } else if (content.every(item => item.isfinish === true)) {
+            changeStatus('clearFinish', 'all')
         } else {
-            setShowStatus('all')
+            changeStatus()
         }
-    }, [finishContent])
+    }
 
-    useEffect(() => {
-        switch(status) {
-            case 'all' || 'unfinish' || 'finish':
-                {
-                    let arr1 = []
-                    let arr2 = []
-                    content.forEach(item => {
-                        if (!item.isfinish) {
-                            arr1.push(item)
-                        } else {
-                            arr2.push(item)
-                        }
-                    })
-                    setUnFinishContent(arr1)
-                    setFinishContent(arr2)
-                }
-            break
-            case 'clearFinish':
-                {
-                    let arr = []
-                    content.forEach(item => {
-                        if (!item.isfinish) {
-                            arr.push(item)
-                        }
-                    })
-                    setContent(arr)
-                    setShowStatus('all')
-                    setStatus('all')
-                    setFinishContent([])
-                    // setUnFinishContent([])
-                }
-            break
-            default: break;
-        }
-    }, [status, content])
-
-    // status 逻辑
-    const statusLogic = (type) => {
-       
+    // change status
+    const changeStatus = (showStatus = 'all', status = 'all') => {
+        setStatus(status)
+        setShowStatus(showStatus)
     }
 
     // Item operate
     const operateItem = (type, id, isfinish) => {
         const contentCopy = [...content]
-        const newFinishContent = []
         contentCopy.forEach((v,i) => {
             // select checkbox
             if (type === 'select' && v.id === id) {
@@ -97,7 +59,6 @@ const TodoList = () => {
             }
         })
         setContent(contentCopy)
-        setFinishContent(newFinishContent)
     }
 
     // Submit
@@ -118,24 +79,41 @@ const TodoList = () => {
 
     // TodoItemStatus
     const TodoItemStatus = () => {
-        const item = item => <TodoItem key={item.id} item={item} operateItem={operateItem}/>
         switch(status) {
-            case 'all' || 'clearFinish':
-                return content.map(item)
+            case 'all':
+            case 'clearFinish':
+                const funcItem = item => <TodoItem key={item.id} item={item} operateItem={operateItem}/>
+                return content.map(funcItem)
             case 'unfinish':
-                return unFinishContent.map(item)
+                const itemUnFinish = item => !item.isfinish ? <TodoItem key={item.id} item={item} operateItem={operateItem}/> : null
+                return content.map(itemUnFinish)
             case 'finish':
-                return finishContent.map(item)
+                const itemFinish = item => item.isfinish ? <TodoItem key={item.id} item={item} operateItem={operateItem}/> : null
+                return content.map(itemFinish)
             default: break;
         }
-        
-        
     }
 
     // onClick Footer Status
     const statusToggle = (type) => {
         setStatus(type)
+        if (type === 'clearFinish') {
+            clearFinish()
+        }
     }
+    
+    // clear finish task
+    const clearFinish = () => {
+        let arr = []
+        content.forEach(item => {
+            if (!item.isfinish) {
+                arr.push(item)
+            }
+        })
+        setContent(arr)
+        changeStatus()
+    }
+
     return (
         <div className={style.todoList}>
             <div className={style.todoListTitle}>TodoList Demo</div>
@@ -191,15 +169,16 @@ const TodoItem = (props) => {
 
 const TodoFooterStatus = (props) => {
     const { status, statusToggle, showStatus } = props
-    
+    // 判断 status css active
+    const styleStatus = (type) => status === type ? style.active : null
     return (
         <div className={style.todoListStatus}>
                 <span className={status === 'all' ? style.active : null} onClick={() => statusToggle('all')}>全部</span>
             {
-                showStatus === 'finish&&unfinish' && showStatus !== 'clearFinish' ? <span className={status === 'unfinish' ? style.active : null} onClick={() => statusToggle('unfinish')}>未完成</span> : null
+                showStatus === 'finish&&unfinish' && showStatus !== 'clearFinish' ? <span className={styleStatus('unfinish')} onClick={() => statusToggle('unfinish')}>未完成</span> : null
             }
             {
-                showStatus === 'finish&&unfinish' && showStatus !== 'clearFinish' ? <span className={status === 'finish' ? style.active : null} onClick={() => statusToggle('finish')}>完成</span> : null
+                showStatus === 'finish&&unfinish' && showStatus !== 'clearFinish' ? <span className={styleStatus('finish')} onClick={() => statusToggle('finish')}>完成</span> : null
             }
             
         </div>
