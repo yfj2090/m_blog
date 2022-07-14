@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import style from './index.module.scss'
 
 const TodoList = () => {
@@ -13,7 +13,7 @@ const TodoList = () => {
 
     const inputRef = useRef()
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         if (content.length) {
             // 计算剩余任务数量
             let num = 0
@@ -58,6 +58,7 @@ const TodoList = () => {
                 contentCopy.splice(i, 1)
             }
         })
+        judgeFooterStatus()
         setContent(contentCopy)
     }
 
