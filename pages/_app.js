@@ -2,6 +2,7 @@
 import { Provider } from 'react-redux'
 import { wrapper } from '../store'
 import '@style/index.scss'
+import 'antd/dist/antd.css'
 
 function MyApp(props) {
     const {

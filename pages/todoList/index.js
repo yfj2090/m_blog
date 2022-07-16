@@ -1,7 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import style from './index.module.scss'
 
+import { DeleteOutlined } from '@ant-design/icons'
+import { Input, Checkbox, Button, Row, Col, Space } from 'antd' 
+
 const TodoList = () => {
+    // Input Value
+    const [inpValue, setInpValue] = useState('')
     // TodoList 内容
     const [content, setContent] = useState([])
     // TodoList Status Toggle => all, finish&&unfinish, clearFinish
@@ -10,8 +15,6 @@ const TodoList = () => {
     const [contentleft, setContentLeft] = useState(0)
     // Footer 状态 => all, finish, unfinish, clearFinish
     const [status, setStatus] = useState('all')
-
-    const inputRef = useRef()
 
     useEffect(() => {
         if (content.length) {
@@ -63,19 +66,20 @@ const TodoList = () => {
     }
 
     // Submit
-    const submit = () => {
-        if (!inputRef.current.value) return
+    const submit = (value) => {
+        if (!value) return
         let item = {
             id: '',
             name: '',
             isfinish: false
         }
         item.id = new Date().getTime()
-        item.name = inputRef.current.value
+        item.name = value
         
         setContent([...content, item])
-        // 提交成功后，删除input的输入数据
-        inputRef.current.value = ''
+        
+        // // 提交成功后，删除input的数据
+        setInpValue('')
     }
 
     // TodoItemStatus
@@ -119,8 +123,13 @@ const TodoList = () => {
         <div className={style.todoList}>
             <div className={style.todoListTitle}>TodoList Demo</div>
             <div className={style.todoListInput}>
-                <input type='text' ref={inputRef}/>
-                <button onClick={submit}>Submit</button>
+                    <Input.Search
+                        value={inpValue}
+                        enterButton="Submit"
+                        onSearch={v => submit(v)}
+                        onChange={e => setInpValue(e.target.value)}
+                        placeholder="Input Task"
+                    />
             </div>
             {
                 // Content
@@ -136,16 +145,7 @@ const TodoList = () => {
                 // Footer
                 content.length ?
                 <div className={style.todoListFooter}>
-                    <span>{`剩余 ${ contentleft } 个项目`}</span>
                     <TodoFooterStatus status={status} statusToggle={statusToggle} contentleft={contentleft}  showStatus={showStatus}/>
-                    {
-                        showStatus === 'finish&&unfinish' || showStatus === 'clearFinish' ?
-                        <div className={style.todoListStatus}>
-                            <span onClick={() => statusToggle('clearFinish')}>清除已完成</span>
-                        </div>
-                        :
-                        null
-                    }
                 </div>
                 :
                 null
@@ -159,30 +159,45 @@ const TodoItem = (props) => {
     const { operateItem } = props
     return (
         <div className={style.todoItem}>
-            <input type="checkbox" checked={isfinish} onChange={(e) => { operateItem('select', id, e.target.checked) }}/>
+            <Checkbox checked={isfinish} onChange={(e) => { operateItem('select', id, e.target.checked) }}>
             {
-                isfinish ? <span className={style.todoItemName}><del>{name}</del></span> : <span className={style.todoItemName}>{name}</span>
+                isfinish ? <span><del>{name}</del></span> : <span>{name}</span>
             }
-            <button className={style.todoItemDelete} onClick={() => { operateItem('delete', id) }}>X</button>
+            </Checkbox>
+            <Button className={style.todoItemDelete} type="link" onClick={() => { operateItem('delete', id) }}>
+                <DeleteOutlined />
+            </Button>
         </div>
     )
 }
 
 const TodoFooterStatus = (props) => {
-    const { status, statusToggle, showStatus } = props
+    const { status, statusToggle, showStatus, contentleft } = props
     // 判断 status css active
-    const styleStatus = (type) => status === type ? style.active : null
+    const styleStatus = (type) => status === type ? 'link' : 'text'
     return (
-        <div className={style.todoListStatus}>
-                <span className={status === 'all' ? style.active : null} onClick={() => statusToggle('all')}>全部</span>
-            {
-                showStatus === 'finish&&unfinish' && showStatus !== 'clearFinish' ? <span className={styleStatus('unfinish')} onClick={() => statusToggle('unfinish')}>未完成</span> : null
-            }
-            {
-                showStatus === 'finish&&unfinish' && showStatus !== 'clearFinish' ? <span className={styleStatus('finish')} onClick={() => statusToggle('finish')}>完成</span> : null
-            }
-            
-        </div>
+        <Row>
+            <Col flex='100px'>
+                <Button type="text">{`剩余 ${ contentleft } 个项目`}</Button>
+            </Col>
+            <Col flex='auto'>
+                <Space size={0}>
+                    <Button type={styleStatus('all')} onClick={() => statusToggle('all')}>全部</Button>
+                    {
+                        showStatus === 'finish&&unfinish' && showStatus !== 'clearFinish' ? <Button type={styleStatus('unfinish')} onClick={() => statusToggle('unfinish')}>未完成</Button> : null
+                    }
+                    {
+                        showStatus === 'finish&&unfinish' && showStatus !== 'clearFinish' ? <Button type={styleStatus('finish')} onClick={() => statusToggle('finish')}>完成</Button> : null
+                    }
+                    {
+                        showStatus === 'finish&&unfinish' || showStatus === 'clearFinish' ?
+                        <Button type='text' onClick={() => statusToggle('clearFinish')}>清除已完成</Button>
+                        :
+                        null
+                    }
+                </Space>
+            </Col>
+        </Row>
     )
 }
 
